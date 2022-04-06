@@ -1,2 +1,2 @@
 # nAltORFs
-Alternate Open Reading Frames (nAlt-ORFs)
+Nested Alternate Open Reading Frames (nAlt-ORFs)
