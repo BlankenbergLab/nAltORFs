@@ -324,6 +324,12 @@ def __main__():
         help="Do not report any alternate sequences that match a provided cannonical CDS in file",
     )
     parser.add_argument(
+        "--translation_table",
+        type=int,
+        default=1,
+        help="Translation table to use.",
+    )
+    parser.add_argument(
         "--version", action="store_true", help="Report version and exit"
     )
     args = parser.parse_args()
@@ -337,7 +343,10 @@ def __main__():
     lno_fasta_wtr = open(args.naltorfs_fasta_out, "w")
     cds_fasta_wtr = open(args.cds_fasta_out, "w")
 
-    log_wtr = open(args.log, "w")
+    if args.log:
+        log_wtr = open(args.log, "w")
+    else:
+        log_wtr = stderr
 
     bed_wtr = open(args.bed_out, "w")
 
@@ -452,7 +461,7 @@ def __main__():
             alt_cds_mod = len(alt_cds) % 3
             alt_cds = alt_cds[:-alt_cds_mod]
 
-            aaseq = translate(alt_cds)
+            aaseq = translate(alt_cds, table=args.translation_table)
             assert aaseq.startswith("M"), Exception(
                 "Translation did not start with methionine: %s --> %s" % alt_cds, aaseq
             )

@@ -13,7 +13,7 @@ HEADER_COUNT = 8
 
 def __main__():
     parser = argparse.ArgumentParser(
-        description="Get Codon frequency from bicodon frames"
+        description="Get Codon frequency from bicodon frequency (codon pairs)"
     )
     parser.add_argument(
         "--bicodons", default="o586358-Refseq_Bicod.tsv", help="Bicondon rates input"
@@ -39,6 +39,7 @@ def __main__():
         header = fh.readline().strip().split("\t")
         taxid_index = header.index("Taxid")
         organelle_index = header.index("Organelle")
+        translation_table_index = header.index("Translation Table")
         # codon_pairs_index = header.index('# Codon Pairs')
         bicodons = header[HEADER_COUNT:]
         print("Using %i codon pairs" % (len(bicodons)))
@@ -53,13 +54,20 @@ def __main__():
                 assert len(bicodons) == len(
                     bicodon_counts
                 ), "Bicodons and bicodons counts are not same length"
+                translation_table = int(line[translation_table_index])
+                if translation_table < 1:
+                    print(
+                        "Translation table was reported as %i, which is invalid. Assuming standard code (1)."
+                        % (translation_table)
+                    )
+                    translation_table = 1
                 for bicodon, count in zip(bicodons, bicodon_counts):
                     codon = bicodon[1:4]
                     count = int(count)
                     if codon not in codons1:
                         codons1[codon] = []
                     codons1[codon].append(count)
-                    aa = translate(codon)
+                    aa = translate(codon, table=translation_table)
                     if aa not in aa1:
                         aa1[aa] = 0
                     aa1[aa] = aa1[aa] + count
@@ -67,7 +75,7 @@ def __main__():
                     if codon not in codons2:
                         codons2[codon] = []
                     codons2[codon].append(count)
-                    aa = translate(codon)
+                    aa = translate(codon, table=translation_table)
                     if aa not in aa2:
                         aa2[aa] = 0
                     aa2[aa] = aa2[aa] + count

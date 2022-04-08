@@ -46,7 +46,7 @@ def __main__():
     parser.add_argument("--division", default="custom", help="division")
     parser.add_argument("--assembly", default="hg38", help="assembly")
     parser.add_argument("--species", default="Homo sapiens", help="species")
-    parser.add_argument("--translation_table", default="0", help="translation_table")
+    parser.add_argument("--translation_table", default="1", help="translation_table")
     parser.add_argument(
         "--version", action="store_true", help="Report version and exit"
     )
